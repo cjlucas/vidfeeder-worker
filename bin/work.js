@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+const NUM_FEED_PARSER_WORKERS = 5;
+const NUM_VIDEO_REFRESHER_WORKERS = 5;
+
 var kue = require('kue');
 var jobs = kue.createQueue({
   prefix: process.env.REDIS_PREFIX || 'podcaster',
@@ -25,14 +28,14 @@ process.once('SIGTERM', function(thing) {
   }, 5000 );
 });
 
-jobs.process('feed parser', 1, function(job, done) {
+jobs.process('feed parser', NUM_FEED_PARSER_WORKERS, function(job, done) {
   var feedId = job.data.id;
   var feedUrl = job.data.url;
   new FeedParserWorker(apiHost, apiPort, apiToken, feedId, feedUrl)
     .work(job, done);
 });
 
-jobs.process('refresh video data', 5, function(job, done) {
+jobs.process('refresh video data', NUM_VIDEO_REFRESHER_WORKERS, function(job, done) {
   var videoId = job.data.id;
   var videoUrl = job.data.url;
   console.log('NEW JOB: refresh video data videoId: ' + videoId + ' videoUrl: ' + videoUrl);
