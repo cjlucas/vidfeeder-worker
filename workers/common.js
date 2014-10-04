@@ -16,7 +16,7 @@ function parseYoutubeDlJSON(data) {
     duration: data.duration,
     uploadDate: new Date(
       data.upload_date.slice(0, 4),
-      data.upload_date.slice(4, 6),
+      data.upload_date.slice(4, 6) - 1, // month param is 0-11
       data.upload_date.slice(6, 8)
     ),
     formats: []
