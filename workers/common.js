@@ -88,6 +88,11 @@ function filterVideoFormats(formats) {
       return false;
     }
 
+    // filter 3D videos
+    if (format.format_note === '3D') {
+        return false;
+    }
+
     return true;
   });
 }
